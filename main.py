@@ -3,7 +3,6 @@ from pygame.locals import *
 import random
 import csv
 
-# test github
 
 pygame.init()
 
@@ -37,12 +36,38 @@ score = 0
 pass_pipe = False
 start = True
 
-#csv variables and code
-filename = 'Highscores.csv'
-with open(filename, 'w', newline="") as file:
-    csvwriter = csv.writer(file)  # 2. create a csvwriter object
-    csvwriter.writerow('Highscore')  # 4. write the header
-    #csvwriter.writerows()  # 5. write the rest of the data
+
+def see_high_score():
+    # Default high score
+    high_score = 0
+
+    # Try to read the high score from a file
+    try:
+        high_score_file = open("high_score.txt", "r")
+        high_score = int(high_score_file.read())
+        high_score_file.close()
+        print("The new high score is", high_score)
+    except IOError:
+        # Error reading file, no high score
+        print("There is no high score yet.")
+    except ValueError:
+        # There's a file there, but we don't understand the number.
+        print("I'm confused. Starting with no high score.")
+
+    return high_score
+
+def get_high_score():
+
+    high_score = 0
+
+    high_score_file = open("high_score.txt", "r")
+    high_score = int(high_score_file.read())
+    high_score_file.close()
+    return high_score
+def save_high_score(new_high_score):
+    high_score_file = open("high_score.txt", "w")
+    high_score_file.write(str(new_high_score))
+    high_score_file.close()
 
 # load images
 bg = pygame.image.load('img/bg.png')
@@ -211,7 +236,7 @@ while run:
         draw_text("PRESS 'SPACE' OR 'LEFT CLICK' TO START PLAYING", click_to_play, black, \
                   int(screen_width / 4 - 120), int(screen_height / 2 - 100))
 
-        draw_text("High score:" +str(score), click_to_play, black, int(screen_width / 4 - 180)\
+        draw_text("High score:" +str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180)\
                   , int(screen_height / 4 - 120))
 
     # look for collision
@@ -223,7 +248,7 @@ while run:
         flying = False
 
     if game_over == False and flying == True:
-        draw_text("High score:" + str(score), click_to_play, black, int(screen_width / 4 - 180),\
+        draw_text("High score:" + str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180),\
                   int(screen_height / 4 - 120))
 
         # generate new pipes
@@ -245,11 +270,21 @@ while run:
 
     # check for game over and reset
     if game_over == True:
-        draw_text("High score:" + str(score), click_to_play, black, int(screen_width / 4 - 180) \
+        draw_text("High score:" + str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180) \
                   , int(screen_height / 4 - 120))
+
+        high_score = get_high_score()
+        if score > high_score:
+            # We do! Save to disk
+            print("Yea! New high score!")
+            save_high_score(score)
+            see_high_score()
+
         if button.draw() == True:
             game_over = False
             score = reset_game()
+
+    high_score = get_high_score()
 
 
     for event in pygame.event.get():
