@@ -1,2 +1,2 @@
-# FlappyBird-FinalVersion
-Final Version for the last project
+# FlappyBirdPygame
+Following online Pygame tutorial and then modifying it.
