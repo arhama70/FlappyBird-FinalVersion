@@ -52,8 +52,12 @@ arrow_img = pygame.transform.scale(arrow_img, (150, 150))
 
 #making the sounds
 die_sound = pygame.mixer.Sound("sounds/die.mp3")
+die_sound.set_volume(0.25)
 flap_sound = pygame.mixer.Sound("sounds/flap.mp3")
-background_sound = pygame.mixer.Sound("sounds/background-music.mp3")
+#background_sound = pygame.mixer.Sound("sounds/background-music.wav")
+# playing  background music
+pygame.mixer.music.load("sounds/background-music.mp3")
+pygame.mixer.music.play(-1)
 
 
 #CODE TO PRINT OUT THE HIGHSCORE
@@ -100,6 +104,7 @@ def draw_text(text, font, text_col, x, y):
 
 def reset_game():
     pipe_group.empty()
+    pygame.mixer.music.play(-1)
     flappy.rect.x = 100
     flappy.rect.y = int(screen_height / 2)
     score = 0
@@ -228,9 +233,7 @@ while run:
     # draw the gorund
     screen.blit(ground_img, (ground_scroll, 568))
 
-    #playing  background music
-    pygame.mixer.music.load('sounds/background-music.mp3')
-    pygame.mixer.music.play(-1)
+
 
     # check the score
     if len(pipe_group) > 0:
@@ -257,10 +260,15 @@ while run:
     # look for collision
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
         game_over = True
+        pygame.mixer.Sound.play(die_sound)
+        pygame.mixer.music.stop()
+
     # check if bird has hit the gorund
     if flappy.rect.bottom >= 568:
         game_over = True
         flying = False
+        pygame.mixer.Sound.play(die_sound)
+        pygame.mixer.music.stop()
 
     if game_over == False and flying == True:
         draw_text("High score:" + str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180),\
@@ -287,6 +295,7 @@ while run:
     if game_over == True:
         draw_text("High score:" + str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180) \
                   , int(screen_height / 4 - 120))
+        pygame.mixer.music.stop()
 
         high_score = get_high_score()
         if score > high_score:
@@ -310,7 +319,7 @@ while run:
 
             #play flap sound
             pygame.mixer.Sound.play(flap_sound)
-            pygame.mixer.music.stop()
+            #pygame.mixer.music.stop()
 
     pygame.display.update()
 
