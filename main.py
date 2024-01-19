@@ -1,4 +1,5 @@
 import pygame
+import pygame.mixer
 from pygame.locals import *
 import random
 import csv
@@ -37,6 +38,25 @@ pass_pipe = False
 start = True
 
 
+# load images
+bg = pygame.image.load('img/bg.png')
+ground_img = pygame.image.load('img/ground.png')
+button_img = pygame.image.load('img/restart.png')
+button_img = pygame.transform.scale(button_img, (150, 150))
+menu_img = pygame.image.load('img/menu.png')
+menu_img = pygame.transform.scale(menu_img, (150, 150))
+start_img = pygame.image.load('img/start.png')
+start_img = pygame.transform.scale(start_img, (150, 150))
+arrow_img = pygame.image.load('img/arrow_2.png')
+arrow_img = pygame.transform.scale(arrow_img, (150, 150))
+
+#making the sounds
+die_sound = pygame.mixer.Sound("sounds/die.mp3")
+flap_sound = pygame.mixer.Sound("sounds/flap.mp3")
+background_sound = pygame.mixer.Sound("sounds/background-music.mp3")
+
+
+#CODE TO PRINT OUT THE HIGHSCORE
 def see_high_score():
     # Default high score
     high_score = 0
@@ -56,6 +76,7 @@ def see_high_score():
 
     return high_score
 
+#GETTING THE HIGHSCORE
 def get_high_score():
 
     high_score = 0
@@ -64,23 +85,12 @@ def get_high_score():
     high_score = int(high_score_file.read())
     high_score_file.close()
     return high_score
+
+#save Highscore
 def save_high_score(new_high_score):
     high_score_file = open("high_score.txt", "w")
     high_score_file.write(str(new_high_score))
     high_score_file.close()
-
-# load images
-bg = pygame.image.load('img/bg.png')
-ground_img = pygame.image.load('img/ground.png')
-button_img = pygame.image.load('img/restart.png')
-button_img = pygame.transform.scale(button_img, (150, 150))
-menu_img = pygame.image.load('img/menu.png')
-menu_img = pygame.transform.scale(menu_img, (150, 150))
-start_img = pygame.image.load('img/start.png')
-start_img = pygame.transform.scale(start_img, (150, 150))
-arrow_img = pygame.image.load('img/arrow.png')
-arrow_img = pygame.transform.scale(arrow_img, (150, 150))
-
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -205,6 +215,7 @@ bird_group.add(flappy)
 run = True
 while run:
 
+
     clock.tick(fps)
 
     # draw background
@@ -216,6 +227,10 @@ while run:
 
     # draw the gorund
     screen.blit(ground_img, (ground_scroll, 568))
+
+    #playing  background music
+    pygame.mixer.music.load('sounds/background-music.mp3')
+    pygame.mixer.music.play(-1)
 
     # check the score
     if len(pipe_group) > 0:
@@ -275,7 +290,6 @@ while run:
 
         high_score = get_high_score()
         if score > high_score:
-            # We do! Save to disk
             print("Yea! New high score!")
             save_high_score(score)
             see_high_score()
@@ -293,6 +307,10 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN or pygame.key.get_pressed()[
             pygame.K_SPACE] and flying == False and game_over == False:
             flying = True
+
+            #play flap sound
+            pygame.mixer.Sound.play(flap_sound)
+            pygame.mixer.music.stop()
 
     pygame.display.update()
 
