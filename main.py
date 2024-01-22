@@ -216,9 +216,11 @@ flappy = Bird(100, int(screen_height / 2))
 
 bird_group.add(flappy)
 
+playsound = True
 
 run = True
 while run:
+
 
 
     clock.tick(fps)
@@ -260,15 +262,20 @@ while run:
     # look for collision
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
         game_over = True
-        pygame.mixer.Sound.play(die_sound)
-        pygame.mixer.music.stop()
 
-    # check if bird has hit the gorund
+        if playsound:
+            pygame.mixer.Sound.play(die_sound)
+            playsound = False
+
+
+    # check if bird has hit the ground
     if flappy.rect.bottom >= 568:
         game_over = True
         flying = False
-        pygame.mixer.Sound.play(die_sound)
-        pygame.mixer.music.stop()
+
+        if playsound:
+            pygame.mixer.Sound.play(die_sound)
+            playsound = False
 
     if game_over == False and flying == True:
         draw_text("High score:" + str(get_high_score()), click_to_play, black, int(screen_width / 4 - 180),\
@@ -306,6 +313,8 @@ while run:
         if button.draw() == True:
             game_over = False
             score = reset_game()
+
+            playsound = True
 
     high_score = get_high_score()
 
