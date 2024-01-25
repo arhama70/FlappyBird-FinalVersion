@@ -54,6 +54,7 @@ arrow_img = pygame.transform.scale(arrow_img, (150, 150))
 die_sound = pygame.mixer.Sound("sounds/die.mp3")
 die_sound.set_volume(0.25)
 flap_sound = pygame.mixer.Sound("sounds/flap.mp3")
+click_sound = pygame.mixer.Sound("sounds/click.mp3")
 #background_sound = pygame.mixer.Sound("sounds/background-music.wav")
 # playing  background music
 pygame.mixer.music.load("sounds/background-music.mp3")
@@ -108,6 +109,7 @@ def reset_game():
     flappy.rect.x = 100
     flappy.rect.y = int(screen_height / 2)
     score = 0
+
     return score
 
 
@@ -198,6 +200,8 @@ class Button():
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1:
                 action = True
+                pygame.mixer.Sound.play(click_sound)
+                playsound = False
 
         # draw button
         screen.blit(self.image, (self.rect.x, self.rect.y))
